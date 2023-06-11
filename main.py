@@ -1,5 +1,5 @@
 from datetime import datetime
-import platform, os, string, subprocess, inspect
+import platform, os, string, subprocess, inspect, signal
 
 
 current_date = datetime.now().date()
@@ -130,6 +130,7 @@ while True:
                         file.write("PPID: {} \n".format(os.getppid()))
                         file.write("PID: {} \n".format(os.getpid()))
                         file.write("Status stoga:\n")
+                        print('Trenutni status stoga spremljen je u datoteku "stog1.txt" u {}'.format(file_path))
                         for frame_info in stog_status:
                             frame = frame_info.frame
                             file.write("Funkcija: {} \n".format(frame.f_code.co_name))
