@@ -1,6 +1,8 @@
 import threading
 import queue
 
+print("Funkcija 4, igra sa prostima brojama")
+
 summ = 0  #summa svih prostih brojeva
 
 minq = queue.Queue(5)    #red naj manih prostih brojava u granama
