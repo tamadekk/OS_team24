@@ -47,7 +47,7 @@ while  maxq.full():
     if max<maxq.get_nowait():
         max=maxq.get()
 
-file = open("minmax.txt", 'w')
-file = min + '- minimalni broj\n' + max + "- maximalni broj"
-file.close()
-print ("summa prostih brojeva = " + summ + "\nminimalni broj = " + min +"\nmaxsimalni broj = " + max)
+f = open("minmax.txt", 'w')
+f = str(min) + '- minimalni broj\n' + str(max) + "- maximalni broj"
+#f.close()
+print ("summa prostih brojeva = " + str(summ) + "\nminimalni broj = " + str(min) +"\nmaxsimalni broj = " + str(max))
