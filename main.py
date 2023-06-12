@@ -13,13 +13,7 @@ while True:
           "5 - Obračun s modelom višedretvenosti \n", "exit or izlaz \n", "Unesite vaš izbor: ")
     izbor = (input())
     match izbor:
-        case "1":
-            def display_menu():
-                print("Main Menu")
-                print("1. Unesi naredbu")
-                print("2. Izlaz")
-
-
+       case "1":
             def get_command():
                 """
                 Upisujemo željenu naredbu koju želimo izvršiti
@@ -85,30 +79,22 @@ while True:
 
             def main():
                 while True:
-                    display_menu()
-                    choice = input("Odaberi opciju: ")
+                    print("Imaš 13 sekundi za unos naredbe.")
+                    command = None
 
-                    if choice == "1":
-                        print("Imaš 13 sekundi za unos naredbe.")
-                        command = None
-
-                        try:
-                            signal.signal(signal.SIGALRM, timeout_handler)
-                            signal.alarm(13)
-                            command = get_command()
-                            signal.alarm(0)  # Resetira se alarm
-                        except TimeoutError:
+                    try:
+                        signal.signal(signal.SIGALRM, timeout_handler)
+                        signal.alarm(13)
+                        command = get_command()
+                        signal.alarm(0)  # Resetira se alarm
+                    except TimeoutError:
                             print("Vrijeme unosa je završilo.")
 
-                        if command is None:
-                            continue
-
-                        execute_command(command)
-                    elif choice == "2":
-                        print("Izlazim iz programa.")
+                    if command is None:
                         break
-                    else:
-                        print("Pogrešan unos.")
+
+                    execute_command(command)
+                    break
 
 
             if __name__ == "__main__":
