@@ -1,15 +1,16 @@
 from datetime import datetime
 import platform, os, string, subprocess, inspect, signal
-
+import threading
 
 current_date = datetime.now().date()
-adresa=os.path.abspath('main.py')
-izbor=string
-print("\n Dobrodošli u naš tim 28 \n",f"Trenutni datum: {current_date}, Trenutna versia os: {platform.platform()}\n Trenutna adresa kučnoj direktoriji: {adresa}")
-
+adresa = os.path.abspath('main.py')
+izbor = string
+print("\n Dobrodošli u naš tim 28 \n",
+      f"Trenutni datum: {current_date}, Trenutna versia os: {platform.platform()}\n Trenutna adresa kučnoj direktoriji: {adresa}")
 
 while True:
-    print("\n 1 - Prva funkcija \n","2 - Druga funkcija \n", "3 - Treca funkcija \n", "exit or izlaz \n","Unesite vaš izbor: ")
+    print("\n 1 - Obrada naredbe \n", "2 - Brisanje direktorija \n", "3 - Poslati signal procesu \n", "4 - Četvrta funkcija \n",
+          "5 - Obračun s modelom višedretvenosti \n", "exit or izlaz \n", "Unesite vaš izbor: ")
     izbor = (input())
     match izbor:
         case "1":
@@ -17,6 +18,8 @@ while True:
                 print("Main Menu")
                 print("1. Unesi naredbu")
                 print("2. Izlaz")
+
+
             def get_command():
                 """
                 Upisujemo željenu naredbu koju želimo izvršiti
@@ -29,6 +32,7 @@ while True:
                     return command
                 except KeyboardInterrupt:
                     return None
+
 
             def execute_command(command):
                 """
@@ -50,7 +54,8 @@ while True:
                 if command.startswith("cal 999"):
                     env = os.environ.copy()
                     env["LC_TIME"] = "en_GB.UTF-8"
-                    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
+                    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                               env=env)
                 else:
                     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -77,6 +82,7 @@ while True:
                 """
                 raise TimeoutError
 
+
             def main():
                 while True:
                     display_menu()
@@ -90,7 +96,7 @@ while True:
                             signal.signal(signal.SIGALRM, timeout_handler)
                             signal.alarm(13)
                             command = get_command()
-                            signal.alarm(0) #Resetira se alarm
+                            signal.alarm(0)  # Resetira se alarm
                         except TimeoutError:
                             print("Vrijeme unosa je završilo.")
 
@@ -104,10 +110,60 @@ while True:
                     else:
                         print("Pogrešan unos.")
 
+
             if __name__ == "__main__":
                 main()
         case "2":
-             print("Funkcija 2")
+            def brisanje(adresa):
+                """
+                Funkcija traži unesenu relativnu ili apsolutnu adresu i briše nju. Prepoznaje je li ispravno unesena adresa,
+                je li ona direktorijeju i je li ona prazna. Nakon toga briše nju (ako za svi vrijednosti je True)
+                i ispisuje na zaslon ID grupe, apsolutnu adresu kojoj je nadređena direktorija i popis svih poddirektorijev i dadotek
+                koji nalazi u nadređenu direktoriju da bi proveriti što unesena direktorija je obrisana.
+
+                Argumenti:
+                adresa-- relativna ili apsolutna adresa koju treba obrisati.
+                """
+                if not os.path.exists(adresa):
+                    print("Adresa nije točna")
+                    return
+                """
+                'exists' koristimo da proveriti je li adresa tochna, nalazi li tamo direktorija.  'exists' vraca vrijednost True ako adresa je točna.
+                koristimo tu 'if not' da programa izvodi što ako vrijednost nije true, da piše informaciju o greške 
+                """
+                if not os.path.isdir(adresa):
+                    print("Ova adresa nije direktorija")
+                    return
+                """
+                'isdir' proverjava je li točno ovo direktorija. jer moramo brisati samo direktoriju a ne neki file
+                """
+                if len(os.listdir(adresa)) > 0:
+                    print("Direktorija nije prazna. Nemogu će obrisati")
+                    return
+                """
+                'listdir' provjerjava kolicinu poddirektorij i dadotek u direktoriji koji upisali smo. I ako značenje je veci
+                od nula, znaci da direktorija nije praza, a u ovom slucaju ne možemo obrisati nju
+                """
+                apsolutna_adresa = os.path.dirname(adresa)
+                id_grupe = os.stat(adresa).st_gid
+
+                try:
+                    os.rmdir(adresa)
+                    print(
+                        f"\n Direktorija je uspješna izbrisana \n Apsolutna adresa: {apsolutna_adresa}\n ID grupe: {id_grupe}\n"
+                        f" Sadržaj nadređenoj direktoriji nakon brisanja:\n {os.listdir(apsolutna_adresa)}")
+                    """
+                    u ovom slucaju 'listdir' ispisuje svi poddirektoriji i filovi koji nalazi u nadređenoj direktoriji
+                    """
+                except OSError as e:
+                    """
+                    'OSError' služi za slučaj kad imamo neku tehničnu pogresku, zbog kojoj nije moguće brisanje
+                    """
+                    print("Došlo je do pogreške prilikom brisanja direktoriji:", str(e))
+
+
+            adresa_direktoriji = input("Unesite apsolutnu ili relativnu adresu direktoriji za brisanje: ")
+            brisanje(adresa_direktoriji)
         case "3":
             def upravljac_signala_1415(signals):
                 """
@@ -182,6 +238,40 @@ while True:
             upravljac_signala_1415(broj_sig)
             upravljac_signala_18(broj_sig)
             upravljac_ostale(broj_sig)
+        case "5":
+            rezultat1 = 0
+            lock = threading.Lock()
+            def oduzimaj(pocetak, kraj):
+                lock.acquire()
+                global rezultat1
+                for i in range(pocetak, kraj+1):
+                    i *= i
+                    rezultat1 += i
+                lock.release()
+            while True:
+                broj = int(input("Unesite broj od 50 do 144 000: "))
+                if not 50 <= broj <= 144000:
+                    print("Krivi unos!")
+                else:
+                    break
+            interval = broj // 4
+            t1 = threading.Thread(target=oduzimaj, args=(1, interval))
+            t2 = threading.Thread(target=oduzimaj, args=(interval + 1, 2 * interval,))
+            t3 = threading.Thread(target=oduzimaj, args=(2 * interval + 1, 3 * interval,))
+            t4 = threading.Thread(target=oduzimaj, args=(3 * interval + 1, broj,))
+
+            t1.start()
+            t2.start()
+            t3.start()
+            t4.start()
+
+            t1.join()
+            t2.join()
+            t3.join()
+            t4.join()
+            var = 55550550550550550550
+            kraj = var - rezultat1
+            print ("Konačna vrijednost varijable je: {}".format(kraj))
         case "exit":
             break
         case "izlaz":
@@ -190,4 +280,3 @@ while True:
             print("")
         case _:
             print("Vaš unos je pogresan")
-
