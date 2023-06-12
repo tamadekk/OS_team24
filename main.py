@@ -13,7 +13,7 @@ while True:
           "5 - Obračun s modelom višedretvenosti \n", "exit or izlaz \n", "Unesite vaš izbor: ")
     izbor = (input())
     match izbor:
-       case "1":
+        case "1":
             def get_command():
                 """
                 Upisujemo željenu naredbu koju želimo izvršiti
