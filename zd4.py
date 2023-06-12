@@ -1,10 +1,11 @@
-import threading, time, os, os.path
+import threading,  os, os.path
 
 
 
 def prime_numbers(startnum,stopnum):
-    if (path.isdir("minmax.txt")):
+    if (os.path.isdir("minmax.txt")):
         file = open("minmax.txt", 'a')
+        file = 120000 + '\n' + 0 + '\n' + 0
         file.close()
     file = open("minmax.txt", 'w+')
     if(startnum==1):
@@ -13,6 +14,7 @@ def prime_numbers(startnum,stopnum):
         startnum=3
     else :
         summ=0
+        max=0
         min=1230000
 
 
@@ -36,14 +38,14 @@ def prime_numbers(startnum,stopnum):
     if max<maxlin :
         max=maxlin
 
-    summlin=file.readline() + summ
+    summlin=int(file.readline()) + summ
 
     file =minlin + '\n' + maxlin + '\n' + summlin
 
 
-thread1 = threading.Thread(target=prime_numbers(1,410000), args=(20,))
-thread2 = threading.Thread(target=prime_numbers(410001,820001), args=(50,))
-thread3 = threading.Thread(target=prime_numbers(820002,1230000), args=(10,))
+thread1 = threading.Thread(target=prime_numbers(), args=(1,410000))
+thread2 = threading.Thread(target=prime_numbers(), args=(410001,820001))
+thread3 = threading.Thread(target=prime_numbers(), args=(820002,1230000))
 
 thread1.start()
 thread2.start()
@@ -59,4 +61,5 @@ max = file.readline()
 summ = file.readline()
 file = min + '- minimalni broj\n' + max + "- maximalni broj"
 print ("summa prostih brojeva = " + summ + "\nminimalni broj = " + min +"\nmaxsimalni broj = " + max)
+
 
